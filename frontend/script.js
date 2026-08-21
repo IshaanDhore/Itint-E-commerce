@@ -53,9 +53,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const cartTotalPrice = document.getElementById('cart-total-price');
     const checkoutBtn = document.querySelector('.checkout-btn');
     
-    let cart = [];
+    let cart = JSON.parse(localStorage.getItem('itint_cart')) || [];
     let PRICE_PER_ITEM = 18.00;
     let productId = null;
+    let productName = "Signature Cherry Tint";
+
+    function saveCart() {
+        localStorage.setItem('itint_cart', JSON.stringify(cart));
+    }
 
     // Fetch product details from backend
     async function loadProduct() {
@@ -66,7 +71,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 const product = products[0]; // Assuming one product for now
                 PRICE_PER_ITEM = product.price;
                 productId = product.id;
+                productName = product.name;
                 document.querySelector('.price').textContent = `$${parseFloat(PRICE_PER_ITEM).toFixed(2)}`;
+                updateCartUI(); // Update UI in case prices changed
             }
         } catch (error) {
             console.error("Error fetching product:", error);
@@ -95,7 +102,8 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             cart.forEach((item, index) => {
                 totalQty += item.qty;
-                const itemTotal = item.qty * PRICE_PER_ITEM;
+                const itemPrice = item.price || PRICE_PER_ITEM;
+                const itemTotal = item.qty * itemPrice;
                 totalPrice += itemTotal;
                 
                 const itemEl = document.createElement('div');
@@ -103,18 +111,47 @@ document.addEventListener('DOMContentLoaded', () => {
                 itemEl.innerHTML = `
                     <div class="cart-item-img">itint</div>
                     <div class="cart-item-info">
-                        <h4>Signature Cherry Tint</h4>
-                        <span class="cart-item-qty">Qty: ${item.qty}</span>
+                        <h4>${item.name || 'Signature Cherry Tint'}</h4>
+                        <div class="cart-qty-controls">
+                            <button class="cart-qty-btn minus" data-index="${index}">-</button>
+                            <span class="cart-item-qty">${item.qty}</span>
+                            <button class="cart-qty-btn plus" data-index="${index}">+</button>
+                        </div>
                         <div class="cart-item-price">$${itemTotal.toFixed(2)}</div>
                     </div>
                 `;
                 cartItemsContainer.appendChild(itemEl);
             });
+
+            // Add event listeners to the new buttons
+            document.querySelectorAll('.cart-qty-btn.minus').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const idx = e.target.getAttribute('data-index');
+                    if (cart[idx].qty > 1) {
+                        cart[idx].qty -= 1;
+                    } else {
+                        cart.splice(idx, 1); // Delete if qty reaches 0
+                    }
+                    updateCartUI();
+                });
+            });
+
+            document.querySelectorAll('.cart-qty-btn.plus').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const idx = e.target.getAttribute('data-index');
+                    cart[idx].qty += 1;
+                    updateCartUI();
+                });
+            });
         }
         
         cartCount.textContent = totalQty;
         cartTotalPrice.textContent = `$${totalPrice.toFixed(2)}`;
+        saveCart();
     }
+    
+    // Initial UI update from localStorage
+    updateCartUI();
 
     cartIcon.addEventListener('click', openCart);
     closeCartBtn.addEventListener('click', closeCart);
@@ -124,17 +161,24 @@ document.addEventListener('DOMContentLoaded', () => {
         addToCartBtn.addEventListener('click', () => {
             const qty = parseInt(qtyInput.value) || 1;
             
-            // Add to cart array (just updating the single product for this prototype)
-            if (cart.length === 0) {
-                cart.push({ id: 1, name: 'Signature Cherry Tint', qty: qty });
+            // Add to cart array, handling multiple products
+            const existingItemIndex = cart.findIndex(item => item.id === (productId || 1));
+            
+            if (existingItemIndex > -1) {
+                cart[existingItemIndex].qty += qty;
             } else {
-                cart[0].qty += qty;
+                cart.push({ 
+                    id: productId || 1, 
+                    name: productName, 
+                    price: PRICE_PER_ITEM,
+                    qty: qty 
+                });
             }
             
             updateCartUI();
             
             // Show toast
-            toast.textContent = `Added ${qty} item(s) to cart!`;
+            toast.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent-color)" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> <span>Added ${qty} item(s) to cart</span>`;
             toast.classList.add('show');
             setTimeout(() => {
                 toast.classList.remove('show');
@@ -242,7 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     },
                     body: JSON.stringify({
                         items: cart.map(item => ({
-                            product_id: productId || 1,
+                            product_id: item.id,
                             quantity: item.qty
                         })),
                         customer_email: email,
@@ -276,6 +320,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             });
                             const verifyData = await verifyRes.json();
                             if (verifyData.status === 'success') {
+                                localStorage.removeItem('itint_cart');
                                 window.location.href = '?success=true';
                             } else {
                                 alert("Payment verification failed!");

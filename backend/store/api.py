@@ -100,6 +100,10 @@ def verify_payment(request, payload: VerifyPaymentSchema):
 
         # Signature is valid, update order status
         order = Order.objects.get(razorpay_order_id=payload.razorpay_order_id)
+        
+        if order.status == 'paid':
+            return {"status": "success"} # Already processed
+            
         order.status = 'paid'
         order.razorpay_payment_id = payload.razorpay_payment_id
         order.save()
@@ -119,3 +123,42 @@ def verify_payment(request, payload: VerifyPaymentSchema):
     except Exception as e:
         logger.error("Payment verification error: %s", e, exc_info=True)
         return {"status": "failed", "error": "An unexpected error occurred. Please try again later."}
+
+import json
+
+@api.post("/webhook")
+def razorpay_webhook(request):
+    payload = request.body.decode('utf-8')
+    signature = request.headers.get('X-Razorpay-Signature')
+
+    if not signature:
+        return HttpResponse(status=400)
+
+    try:
+        # Verify the webhook signature
+        client.utility.verify_webhook_signature(payload, signature, settings.RAZORPAY_WEBHOOK_SECRET)
+    except razorpay.errors.SignatureVerificationError:
+        return HttpResponse(status=400)
+    except Exception as e:
+        logger.error("Webhook error: %s", e, exc_info=True)
+        return HttpResponse(status=400)
+
+    event = json.loads(payload)
+    if event.get('event') == 'order.paid':
+        order_entity = event['payload']['order']['entity']
+        razorpay_order_id = order_entity['id']
+        try:
+            order = Order.objects.get(razorpay_order_id=razorpay_order_id)
+            if order.status != 'paid':
+                order.status = 'paid'
+                order.save()
+
+                # Deduct stock
+                for item in order.items.all():
+                    product = item.product
+                    product.stock_quantity -= item.quantity
+                    product.save()
+        except Order.DoesNotExist:
+            pass
+
+    return HttpResponse(status=200)
