@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>itint | Liptints by Aline</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Grain Overlay -->
+    <svg class="grain-overlay" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <filter id="noiseFilter">
+        <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/>
+      </filter>
+      <rect width="100%" height="100%" filter="url(#noiseFilter)"/>
+    </svg>
+
+    <!-- Navbar -->
+    <nav class="glass-navbar fade-in-up">
+        <div class="logo">itint</div>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#shop">Shop</a></li>
+        </ul>
+        <div class="cart-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="9" cy="21" r="1"></circle>
+                <circle cx="20" cy="21" r="1"></circle>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+            </svg>
+            <span class="cart-count">0</span>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <!-- Hero Section -->
+        <header id="home" class="hero-section wrapper-radius">
+            <div class="massive-text">CHERRY</div>
+            <img src="product.jpg" alt="itint Hero" class="hero-bg-img">
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <div class="hero-left fade-in-up">
+                    <span class="badge">New Arrival</span>
+                    <h1>Discover Your Perfect<br>Cherry Tint</h1>
+                    <p class="hero-desc">Experience the luscious color and deep hydration of our signature 3ml lip tint. A perfect blend of nature and elegance by Aline.</p>
+                    <div class="hero-buttons">
+                        <a href="#shop" class="interactive-btn">
+                            <span class="btn-text">Shop Now</span>
+                            <div class="btn-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="hero-right fade-in-up" style="animation-delay: 0.2s;">
+                    <!-- Glass Stat Cards -->
+                    <div class="glass-stat-card">
+                        <div class="stat-value">3ml</div>
+                        <div class="stat-label label">Travel Size</div>
+                    </div>
+                    <div class="glass-stat-card">
+                        <div class="stat-value">12h</div>
+                        <div class="stat-label label">Long Lasting</div>
+                    </div>
+                    <div class="glass-stat-card">
+                        <div class="stat-value">100%</div>
+                        <div class="stat-label label">Vegan</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Feature Grid -->
+        <section id="features" class="feature-grid-section wrapper-radius">
+            <div class="feature-grid">
+                <div class="feature-left fade-in-up">
+                    <h2 class="sticky-header">Why You'll Love It</h2>
+                    <div class="feature-icon-grid">
+                        <div class="icon-label-pair">
+                            <div class="icon-box">💧</div>
+                            <span class="label">Hydration</span>
+                        </div>
+                        <div class="icon-label-pair">
+                            <div class="icon-box">🍒</div>
+                            <span class="label">Vibrant Color</span>
+                        </div>
+                        <div class="icon-label-pair">
+                            <div class="icon-box">✨</div>
+                            <span class="label">Long-Lasting</span>
+                        </div>
+                        <div class="icon-label-pair">
+                            <div class="icon-box">🌱</div>
+                            <span class="label">Natural Oils</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="feature-right fade-in-up" style="animation-delay: 0.2s;">
+                    <div class="display-card inner-radius">
+                        <img src="product.jpg" alt="Product Display" class="hover-scale-img">
+                        <div class="floating-glass-component">
+                            <div class="status-indicator">
+                                <span class="dot"></span> Formulation
+                            </div>
+                            <div class="progress-bar"><div class="progress-fill" style="width: 85%"></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dark Productivity Block -->
+        <section class="dark-productivity-block wrapper-radius">
+            <div class="productivity-content">
+                <div class="prod-left fade-in-up">
+                    <h2>Perfect Application</h2>
+                    <div class="step-box inner-radius">
+                        <div class="step-num label">01</div>
+                        <h3>Prep Your Lips</h3>
+                        <p>Ensure lips are clean and exfoliated for the smoothest application.</p>
+                    </div>
+                    <div class="step-box inner-radius">
+                        <div class="step-num label">02</div>
+                        <h3>Apply & Blend</h3>
+                        <p>Dab a small amount and blend outward for a natural cherry gradient.</p>
+                    </div>
+                </div>
+                <div class="prod-right fade-in-up" style="animation-delay: 0.2s;">
+                    <div class="mockup-window inner-radius">
+                        <img src="product.jpg" alt="Mockup" class="mockup-img">
+                        <div class="bounce-tag">Glowing</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Shop Bento Grid -->
+        <section id="shop" class="bento-shop-section wrapper-radius">
+            <h2 class="fade-in-up">Shop itint</h2>
+            <div class="bento-grid">
+                <!-- Card 1 -->
+                <div class="bento-card inner-radius fade-in-up" style="animation-delay: 0.1s;">
+                    <div class="bento-top">
+                        <img src="product.jpg" alt="Signature Cherry">
+                        <div class="gradient-overlay"></div>
+                    </div>
+                    <div class="bento-bottom">
+                        <h3>Signature Cherry</h3>
+                        <p class="bento-desc">The ultimate cherry tint for a blooming pout.</p>
+                        <div class="price-row">
+                            <span class="price">$18.00</span>
+                            <div class="quantity-selector">
+                                <button class="qty-btn minus">-</button>
+                                <input type="number" class="qty-input" value="1" min="1" max="10">
+                                <button class="qty-btn plus">+</button>
+                            </div>
+                        </div>
+                        <button class="interactive-btn full-width" id="add-to-cart">
+                            <span class="btn-text">Add to Cart</span>
+                            <div class="btn-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Modals and Overlays -->
+    <div class="toast" id="toast">Added to cart successfully!</div>
+
+    <!-- Cart Drawer -->
+    <div class="cart-overlay" id="cart-overlay"></div>
+    <div class="cart-drawer" id="cart-drawer">
+        <div class="cart-header">
+            <h2>Your Cart</h2>
+            <button class="close-cart" id="close-cart">&times;</button>
+        </div>
+        <div class="cart-items" id="cart-items">
+            <div class="empty-cart-msg">Your cart is empty.</div>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total:</span>
+                <span id="cart-total-price">$0.00</span>
+            </div>
+            <button class="interactive-btn full-width checkout-btn">
+                <span class="btn-text">Checkout</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div class="checkout-overlay" id="checkout-overlay"></div>
+    <div class="checkout-modal inner-radius" id="checkout-modal">
+        <div class="checkout-header">
+            <h2>Checkout Details</h2>
+            <button class="close-checkout" id="close-checkout">&times;</button>
+        </div>
+        <form id="checkout-form">
+            <div class="form-group">
+                <label for="checkout-email" class="label">Email Address</label>
+                <input type="email" id="checkout-email" required placeholder="you@example.com">
+            </div>
+            <div class="form-group">
+                <label for="checkout-phone" class="label">Phone Number</label>
+                <input type="tel" id="checkout-phone" required placeholder="+1 234 567 8900">
+            </div>
+            <div class="form-group location-group">
+                <div class="location-header">
+                    <label class="label">Delivery Address</label>
+                    <button type="button" id="use-current-location" class="location-btn">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"/><path d="M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/></svg>
+                        Use Current Location
+                    </button>
+                </div>
+                
+                <div id="map-container" class="map-container">
+                    <div class="map-placeholder">Click 'Use Current Location' to view map</div>
+                </div>
+
+                <div class="address-grid">
+                    <input type="text" id="address-street" required placeholder="Street Address" class="full-width">
+                    <input type="text" id="address-city" required placeholder="City">
+                    <input type="text" id="address-state" required placeholder="State / Province">
+                    <input type="text" id="address-zip" required placeholder="Postal Code">
+                    <input type="text" id="address-country" required placeholder="Country">
+                </div>
+            </div>
+            <button type="submit" class="interactive-btn full-width submit-checkout-btn">
+                <span class="btn-text">Proceed to Payment</span>
+                <div class="btn-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+            </button>
+        </form>
+    </div>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
