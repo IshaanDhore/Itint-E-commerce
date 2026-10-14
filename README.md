@@ -12,6 +12,33 @@ Production-ready e-commerce platform for **itint** (Liptints by Aline). Built wi
 - **Database**: PostgreSQL (production via `DATABASE_URL`), SQLite fallback locally.
 - **Payments**: Razorpay Orders, HMAC signature verification, and idempotently handled webhooks.
 - **Security**: Strict CORS, CSRF protection, HSTS, SSL redirects, rate limiting on sensitive endpoints, and no hardcoded secret keys.
+- **CI/CD & DevOps**: Automated Jenkins Pipeline, Docker containerization, and Minikube Kubernetes deployment (see full [DEVOPS_REPORT.md](DEVOPS_REPORT.md)).
+
+---
+
+## 🚀 CI/CD Pipeline & Kubernetes Deployment (CCA 2 Submission)
+
+This repository implements a fully automated end-to-end CI/CD delivery pipeline using **Jenkins**, **Docker**, **Docker Hub**, and **Minikube (Kubernetes)** hosted on AWS EC2, in fulfillment of the **CCA 2 — Cloud Computing and DevOps** assignment.
+
+### 📋 Submission Checklist & Manifests
+- **GitHub Repository**: [`https://github.com/IshaanDhore/Itint-E-commerce`](https://github.com/IshaanDhore/Itint-E-commerce)
+- **Declarative Pipeline**: [`Jenkinsfile`](Jenkinsfile)
+- **Container Specification**: [`Dockerfile`](Dockerfile)
+- **Kubernetes Manifests**: [`k8s/deployment.yaml`](k8s/deployment.yaml) and [`k8s/service.yaml`](k8s/service.yaml)
+- **Comprehensive DevOps Report**: [`DEVOPS_REPORT.md`](DEVOPS_REPORT.md)
+
+### 🔄 The 7 Automated Pipeline Stages
+| Step | Stage Name | What Happens |
+| :--- | :--- | :--- |
+| **1** | **Source Code** | Project source is tracked in GitHub repository with Git version control. |
+| **2** | **Jenkins Checkout** | Jenkins pulls the latest source code commit from GitHub `main` branch. |
+| **3** | **Build and Test** | Creates virtual environment, installs dependencies, and runs `python backend/manage.py test store`. |
+| **4** | **Docker Build** | Builds an optimized container image tagged with `ishaandhore/itint-store:${BUILD_NUMBER}` and `:latest`. |
+| **5** | **Push Image** | Authenticates securely with Docker Hub using Jenkins credentials and pushes versioned images. |
+| **6** | **Minikube Deployment** | Patches `k8s/deployment.yaml` with the current build image tag and performs a zero-downtime rolling update. |
+| **7** | **Verification** | Validates running pods, deployments, services, and queries `/api/health` with `curl` for HTTP 200 response. |
+
+*(For full AWS EC2 setup commands, Jenkins configuration, and Viva preparation, read [DEVOPS_REPORT.md](DEVOPS_REPORT.md))*
 
 ---
 

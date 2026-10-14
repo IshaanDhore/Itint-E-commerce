@@ -162,9 +162,9 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1792006443.3204446,
-    "seen": 1792006538.232242,
-    "ast_hash": "02b9137acff055ec9bceee65eee61372",
+    "mtime": 1792010563.6496756,
+    "seen": 1792010575.6741047,
+    "ast_hash": "39fc5c9b9d8c47e2b8147d1da32a1005",
     "semantic_hash": ""
   },
   "backend/requirements.txt": {
@@ -183,6 +183,24 @@
     "mtime": 1792006328.238347,
     "seen": 1792006538.2322483,
     "ast_hash": "177f8c9bab60bd1b9fb0cb926558bcc3",
+    "semantic_hash": ""
+  },
+  "DEVOPS_REPORT.md": {
+    "mtime": 1792007432.0076506,
+    "seen": 1792007460.8594606,
+    "ast_hash": "221c1bc9fe3916f1a07c2a7653927231",
+    "semantic_hash": ""
+  },
+  "k8s/deployment.yaml": {
+    "mtime": 1792007377.3098102,
+    "seen": 1792007460.8594677,
+    "ast_hash": "53a7067424e5d7f29a07933a8858687c",
+    "semantic_hash": ""
+  },
+  "k8s/service.yaml": {
+    "mtime": 1792007384.8417866,
+    "seen": 1792007460.8594697,
+    "ast_hash": "e72de7b6b6663974630026ac64c0cbd0",
     "semantic_hash": ""
   }
 }

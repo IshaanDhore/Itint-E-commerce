@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: itint-deployment
+  labels:
+    app: itint-store
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: itint-store
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: itint-store
+    spec:
+      containers:
+      - name: itint-store
+        image: ishaandhore/itint-store:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+          name: http
+        env:
+        - name: SECRET_KEY
+          value: "k8s-prod-secret-key-itint-minikube-devops-cca2-assignment"
+        - name: DEBUG
+          value: "False"
+        - name: ALLOWED_HOSTS
+          value: "*"
+        - name: CSRF_TRUSTED_ORIGINS
+          value: "http://localhost:8000,http://127.0.0.1:8000,http://localhost:30080"
+        - name: CORS_ALLOWED_ORIGINS
+          value: "http://localhost:8000,http://127.0.0.1:8000,http://localhost:30080"
+        - name: RAZORPAY_KEY_ID
+          value: "rzp_test_TQvhq3R7ua7Qd0"
+        - name: RAZORPAY_KEY_SECRET
+          value: "Cpmcci3bFIQilIzOsehmjEYN"
+        - name: RAZORPAY_WEBHOOK_SECRET
+          value: "dummy_webhook_secret"
+        - name: RAZORPAY_CURRENCY
+          value: "INR"
+        - name: SECURE_SSL_REDIRECT
+          value: "False"
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "250m"
+        readinessProbe:
+          httpGet:
+            path: /api/health
+            port: 8000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /api/health
+            port: 8000
+          initialDelaySeconds: 15
+          periodSeconds: 10
