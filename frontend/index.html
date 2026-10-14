@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
 <body>
     <!-- Grain Overlay -->
@@ -41,7 +42,7 @@
         <!-- Hero Section -->
         <header id="home" class="hero-section wrapper-radius">
             <div class="massive-text">CHERRY</div>
-            <img src="product.jpg" alt="itint Hero" class="hero-bg-img">
+            <img src="{% static 'product.jpg' %}" alt="itint Hero" class="hero-bg-img">
             <div class="hero-overlay"></div>
             <div class="hero-content">
                 <div class="hero-left fade-in-up">
@@ -101,7 +102,7 @@
                 </div>
                 <div class="feature-right fade-in-up" style="animation-delay: 0.2s;">
                     <div class="display-card inner-radius">
-                        <img src="product.jpg" alt="Product Display" class="hover-scale-img">
+                        <img src="{% static 'product.jpg' %}" alt="Product Display" class="hover-scale-img">
                         <div class="floating-glass-component">
                             <div class="status-indicator">
                                 <span class="dot"></span> Formulation
@@ -131,7 +132,7 @@
                 </div>
                 <div class="prod-right fade-in-up" style="animation-delay: 0.2s;">
                     <div class="mockup-window inner-radius">
-                        <img src="product.jpg" alt="Mockup" class="mockup-img">
+                        <img src="{% static 'product.jpg' %}" alt="Mockup" class="mockup-img">
                         <div class="bounce-tag">Glowing</div>
                     </div>
                 </div>
@@ -145,7 +146,7 @@
                 <!-- Card 1 -->
                 <div class="bento-card inner-radius fade-in-up" style="animation-delay: 0.1s;">
                     <div class="bento-top">
-                        <img src="product.jpg" alt="Signature Cherry">
+                        <img src="{% static 'product.jpg' %}" alt="Signature Cherry">
                         <div class="gradient-overlay"></div>
                     </div>
                     <div class="bento-bottom">
@@ -206,6 +207,7 @@
             <h2>Checkout Details</h2>
             <button class="close-checkout" id="close-checkout">&times;</button>
         </div>
+        <div class="checkout-error-msg" id="checkout-error-msg"></div>
         <form id="checkout-form">
             <div class="form-group">
                 <label for="checkout-email" class="label">Email Address</label>
@@ -243,7 +245,24 @@
         </form>
     </div>
 
+    <!-- Order Confirmation Modal -->
+    <div class="confirmation-overlay" id="confirmation-overlay"></div>
+    <div class="confirmation-modal inner-radius" id="confirmation-modal">
+        <div class="confirmation-icon">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+        </div>
+        <h2 id="confirmation-title">Order Confirmed!</h2>
+        <p id="confirmation-desc">Thank you for your purchase. We have received your payment and will begin processing your shipment right away.</p>
+        <div class="confirmation-details" id="confirmation-details"></div>
+        <button type="button" class="interactive-btn full-width" id="continue-shopping-btn">
+            <span class="btn-text">Continue Shopping</span>
+        </button>
+    </div>
+
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-    <script src="script.js"></script>
+    <script src="{% static 'script.js' %}"></script>
 </body>
 </html>

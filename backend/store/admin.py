@@ -14,8 +14,19 @@ class ProductAdmin(admin.ModelAdmin):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('id', 'customer_email', 'total_amount', 'status', 'created_at')
+    list_display = ('id', 'customer_email', 'phone_number', 'total_amount', 'status', 'created_at')
     list_filter = ('status', 'created_at')
-    search_fields = ('customer_email', 'razorpay_order_id', 'razorpay_payment_id')
+    search_fields = ('customer_email', 'phone_number', 'razorpay_order_id', 'razorpay_payment_id', 'shipping_address')
     inlines = [OrderItemInline]
     readonly_fields = ('razorpay_order_id', 'razorpay_payment_id')
+    fieldsets = (
+        ("Customer Info", {
+            "fields": ("customer_email", "phone_number")
+        }),
+        ("Shipping Address", {
+            "fields": ("shipping_street", "shipping_city", "shipping_state", "shipping_zip", "shipping_country", "shipping_address")
+        }),
+        ("Order Details", {
+            "fields": ("total_amount", "status", "razorpay_order_id", "razorpay_payment_id")
+        }),
+    )

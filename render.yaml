@@ -1,0 +1,39 @@
+services:
+  - type: web
+    name: itint-store
+    runtime: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn --chdir backend itint_backend.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --threads 4"
+    plan: free
+    healthCheckPath: /api/health
+    envVars:
+      - key: DEBUG
+        value: "False"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: itint-db
+          property: connectionString
+      - key: ALLOWED_HOSTS
+        value: "itint-store.onrender.com,localhost"
+      - key: CSRF_TRUSTED_ORIGINS
+        value: "https://itint-store.onrender.com"
+      - key: CORS_ALLOWED_ORIGINS
+        value: "https://itint-store.onrender.com"
+      - key: RAZORPAY_KEY_ID
+        sync: false
+      - key: RAZORPAY_KEY_SECRET
+        sync: false
+      - key: RAZORPAY_WEBHOOK_SECRET
+        sync: false
+      - key: RAZORPAY_CURRENCY
+        value: "INR"
+      - key: SECURE_SSL_REDIRECT
+        value: "True"
+
+databases:
+  - name: itint-db
+    databaseName: itint
+    user: itint_user
+    plan: free
