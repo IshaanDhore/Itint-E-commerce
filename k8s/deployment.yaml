@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - name: itint-store
-        image: ishaandhore/itint-store:latest
+        image: ishaan2006/itint-store:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 8000

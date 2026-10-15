@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        // Replace with your Docker Hub username
-        DOCKER_HUB_USER = 'ishaandhore'
+        // Your Docker Hub username
+        DOCKER_HUB_USER = 'ishaan2006'
         IMAGE_NAME = 'itint-store'
         DOCKER_IMAGE = "${DOCKER_HUB_USER}/${IMAGE_NAME}"
         DOCKER_CREDENTIALS_ID = 'docker-hub-credentials'
