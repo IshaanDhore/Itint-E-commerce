@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CCA 2 — CI/CD Pipeline Implementation and Deployment</title>
+<style>
+  @page {
+    size: A4 portrait;
+    margin: 18mm 16mm 18mm 16mm;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #1a1a1a;
+    line-height: 1.45;
+    font-size: 11pt;
+    margin: 0;
+    padding: 20px;
+    background: #fdfdfd;
+  }
+  .page {
+    background: white;
+    width: 100%;
+    max-width: 820px;
+    margin: 0 auto 30px auto;
+    padding: 25px 35px 35px 35px;
+    box-sizing: border-box;
+    box-shadow: 0 0 10px rgba(0,0,0,0.08);
+    page-break-after: always;
+  }
+  @media print {
+    body { background: none; padding: 0; }
+    .page { box-shadow: none; margin: 0; padding: 0; page-break-after: always; }
+  }
+  .header-title {
+    text-align: center;
+    font-size: 20pt;
+    font-weight: 800;
+    color: #0b3d91;
+    margin-bottom: 4px;
+    letter-spacing: 0.5px;
+  }
+  .header-subtitle {
+    text-align: center;
+    font-size: 13pt;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: #222;
+  }
+  .meta-table, .pipeline-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 18px;
+    font-size: 10pt;
+  }
+  .meta-table td, .meta-table th, .pipeline-table td, .pipeline-table th {
+    border: 1px solid #c8d3e2;
+    padding: 7px 10px;
+    vertical-align: middle;
+  }
+  .meta-table td:first-child {
+    font-weight: 700;
+    width: 25%;
+    background-color: #f4f7fb;
+    color: #1a2a40;
+  }
+  .pipeline-table th {
+    background-color: #0f3d6c;
+    color: white;
+    text-align: left;
+    font-weight: 600;
+  }
+  .pipeline-table tr:nth-child(even) {
+    background-color: #f9fbfd;
+  }
+  h2 {
+    font-size: 13pt;
+    font-weight: 700;
+    color: #0f3d6c;
+    border-bottom: 1.5px solid #0f3d6c;
+    padding-bottom: 4px;
+    margin-top: 15px;
+    margin-bottom: 10px;
+  }
+  .figure-box {
+    margin: 15px 0 10px 0;
+    text-align: center;
+  }
+  .figure-img-container {
+    width: 100%;
+    min-height: 250px;
+    border: 1px solid #d0d7de;
+    background: #fafbfc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .figure-img-container img {
+    max-width: 100%;
+    max-height: 380px;
+    height: auto;
+    display: block;
+    object-fit: contain;
+  }
+  .figure-caption {
+    font-size: 9.5pt;
+    color: #444;
+    font-style: italic;
+    margin-top: 6px;
+    text-align: center;
+  }
+  .page-footer {
+    display: flex;
+    justify-content: space-between;
+    font-size: 8.5pt;
+    color: #777;
+    border-top: 1px solid #e1e4e8;
+    padding-top: 8px;
+    margin-top: 25px;
+  }
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 8.5pt;
+    font-weight: 600;
+    background: #e1f5fe;
+    color: #0277bd;
+  }
+  .placeholder-text {
+    color: #8c959f;
+    font-size: 10pt;
+    text-align: center;
+    padding: 20px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= PAGE 1 ================= -->
+<div class="page">
+  <div class="header-title">CCA 2</div>
+  <div class="header-subtitle">CI/CD Pipeline Implementation and Deployment of an Existing Project</div>
+
+  <table class="meta-table">
+    <tr>
+      <td>Student</td>
+      <td><strong>Ishaan Dhore</strong></td>
+    </tr>
+    <tr>
+      <td>PRN / Division</td>
+      <td>TYCSE — Cloud Computing and DevOps</td>
+    </tr>
+    <tr>
+      <td>Course</td>
+      <td>TYCSE: Cloud Computing and DevOps (Total Marks: 10)</td>
+    </tr>
+    <tr>
+      <td>Project</td>
+      <td><strong>itint — Liptints by Aline</strong> (Full-stack E-Commerce Platform: Django 6 REST API, WhiteNoise & Vanilla Glassmorphic Frontend)</td>
+    </tr>
+    <tr>
+      <td>GitHub repository URL</td>
+      <td><a href="https://github.com/IshaanDhore/Itint-E-commerce" target="_blank">https://github.com/IshaanDhore/Itint-E-commerce</a></td>
+    </tr>
+    <tr>
+      <td>Branch</td>
+      <td><span class="badge">main</span></td>
+    </tr>
+    <tr>
+      <td>Jenkins job</td>
+      <td><code>itint-ci-cd-pipeline</code> (Declarative pipeline from Jenkinsfile)</td>
+    </tr>
+    <tr>
+      <td>Container registry</td>
+      <td>Docker Hub: <code>ishaan2006/itint-store</code></td>
+    </tr>
+    <tr>
+      <td>Deployment</td>
+      <td>Minikube Kubernetes Cluster on AWS EC2 (Mumbai ap-south-1)</td>
+    </tr>
+  </table>
+
+  <h2>Pipeline Overview</h2>
+  <p>The <strong>itint</strong> e-commerce application is built, tested, containerized, and deployed automatically through an end-to-end continuous delivery pipeline. Jenkins, Docker, and Minikube run unified on an AWS EC2 instance. The table below lists the 7 mandated CCA 2 pipeline stages and the corresponding screenshot evidence.</p>
+
+  <table class="pipeline-table">
+    <thead>
+      <tr>
+        <th style="width: 22%;">Stage</th>
+        <th style="width: 63%;">What happens</th>
+        <th style="width: 15%;">Evidence</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Source Code</strong></td>
+        <td>Project source, Dockerfile, Jenkinsfile and k8s/ manifests are tracked in GitHub</td>
+        <td>Fig. 1</td>
+      </tr>
+      <tr>
+        <td><strong>Jenkins Checkout</strong></td>
+        <td>Jenkins pulls the latest commit from GitHub main branch via SCM checkout</td>
+        <td>Fig. 5</td>
+      </tr>
+      <tr>
+        <td><strong>Build and Test</strong></td>
+        <td>Python virtualenv installed and <code>manage.py test store</code> (6 automated tests) executed</td>
+        <td>Fig. 6</td>
+      </tr>
+      <tr>
+        <td><strong>Docker Build</strong></td>
+        <td>Container image built from Dockerfile and tagged with <code>${BUILD_NUMBER}</code> and <code>latest</code></td>
+        <td>Fig. 6</td>
+      </tr>
+      <tr>
+        <td><strong>Push Image</strong></td>
+        <td>Image pushed to Docker Hub using securely stored Jenkins credentials (<code>docker-hub-credentials</code>)</td>
+        <td>Fig. 4, Fig. 7</td>
+      </tr>
+      <tr>
+        <td><strong>Minikube Deployment</strong></td>
+        <td>RollingUpdate Deployment and NodePort Service from <code>k8s/</code> applied and rollout verified</td>
+        <td>Fig. 8, Fig. 9</td>
+      </tr>
+      <tr>
+        <td><strong>Verification</strong></td>
+        <td>Pods, deployment, and service verified; application health checked via <code>/api/health</code> (HTTP 200)</td>
+        <td>Fig. 10, Fig. 11</td>
+      </tr>
+      <tr>
+        <td><strong>Code change re-run</strong></td>
+        <td>Source code updated in frontend, committed, pushed, and pipeline re-executed automatically</td>
+        <td>Fig. 12, Fig. 13</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Files in the Repository</h2>
+  <p><code>Jenkinsfile</code> (repository root), <code>Dockerfile</code>, <code>k8s/deployment.yaml</code>, <code>k8s/service.yaml</code>, and <code>DEVOPS_REPORT.md</code>. All committed and active on the <code>main</code> branch.</p>
+
+  <div class="page-footer">
+    <span>CCA 2: Cloud Computing and DevOps</span>
+    <span>Page 1</span>
+  </div>
+</div>
+
+<!-- ================= PAGE 2 ================= -->
+<div class="page">
+  <h2>1. Source Code on GitHub</h2>
+  <div class="figure-box">
+    <div class="figure-img-container">
+      <img src="screenshots/fig1_github_repo.png" alt="Fig 1" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+      <div class="placeholder-text" style="display:none;">📷 <strong>Insert Fig. 1 Screenshot Here</strong><br>Screenshot of GitHub repository <code>https://github.com/IshaanDhore/Itint-E-commerce</code> showing root files (Dockerfile, Jenkinsfile, k8s folder).</div>
+    </div>
+    <div class="figure-caption">Fig. 1: Repository Itint-E-commerce on the main branch, with project source, Jenkinsfile, k8s/ folder, and Dockerfile.</div>
+  </div>
+
+  <h2>2. AWS Infrastructure</h2>
+  <div class="figure-box">
+    <div class="figure-img-container">
+      <img src="screenshots/fig2_aws_ec2.png" alt="Fig 2" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+      <div class="placeholder-text" style="display:none;">📷 <strong>Insert Fig. 2 Screenshot Here</strong><br>Screenshot of AWS EC2 Console showing running instance with 2/2 or 3/3 status checks passed (ap-south-1).</div>
+    </div>
+    <div class="figure-caption">Fig. 2: EC2 instance running in AWS Mumbai (ap-south-1) with 2/2 status checks passed. It hosts Jenkins, Docker, and Minikube.</div>
+  </div>
+
+  <div class="page-footer">
+    <span>CCA 2: Cloud Computing and DevOps</span>
+    <span>Page 2</span>
+  </div>
+</div>
+
+<!-- ================= PAGE 3 ================= -->
+<div class="page">
+  <h2>3. Jenkins Running on AWS</h2>
+  <div class="figure-box">
+    <div class="figure-img-container">
+      <img src="screenshots/fig3_jenkins_dashboard.png" alt="Fig 3" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+      <div class="placeholder-text" style="display:none;">📷 <strong>Insert Fig. 3 Screenshot Here</strong><br>Screenshot of Jenkins dashboard served from EC2 (port 8080) with pipeline job itint-ci-cd-pipeline.</div>
+    </div>
+    <div class="figure-caption">Fig. 3: Jenkins dashboard served from the EC2 server (port 8080) with the pipeline job itint-ci-cd-pipeline and its successful execution.</div>
+  </div>
+
+  <h2>4. Jenkins Credentials</h2>
+  <div class="figure-box">
+    <div class="figure-img-container">
+      <img src="screenshots/fig4_jenkins_credentials.png" alt="Fig 4" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+      <div class="placeholder-text" style="display:none;">📷 <strong>Insert Fig. 4 Screenshot Here</strong><br>Screenshot of Manage Jenkins > Credentials > Global showing docker-hub-credentials.</div>
+    </div>
+    <div class="figure-caption">Fig. 4: Docker Hub access token stored securely in Jenkins as docker-hub-credentials. The Jenkinsfile only references this ID, keeping secrets out of git.</div>
+  </div>
+
+  <div class="page-footer">
+    <span>CCA 2: Cloud Computing and DevOps</span>
+    <span>Page 3</span>
+  </div>
+</div>
+
+<!-- ================= PAGE 4 ================= -->
+<div class="page">
+  <h2>5. Pipeline Stage: Jenkins Checkout</h2>
+  <div class="figure-box">
+    <div class="figure-img-container">
+      <img src="screenshots/fig5_checkout_console.png" alt="Fig 5" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+      <div class="placeholder-text" style="display:none;">📷 <strong>Insert Fig. 5 Screenshot Here</strong><br>Screenshot of Build #1 Console Output showing git fetch/clone from GitHub main branch.</div>
+    </div>
+    <div class="figure-caption">Fig. 5: Build #1 console output. Jenkins obtains the Jenkinsfile from GitHub and clones the project source code.</div>
+  </div>
+
+  <h2>6. Build, Test and Docker Build Stages</h2>
+  <div class="figure-box">
+    <div class="figure-img-container">
+      <img src="screenshots/fig6_stage_view.png" alt="Fig 6" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+      <div class="placeholder-text" style="display:none;">📷 <strong>Insert Fig. 6 Screenshot Here</strong><br>Screenshot of Jenkins Pipeline Stage View showing green boxes for Checkout, Build and Test, Docker Build, Push Image, Minikube Deployment, Verification.</div>
+    </div>
+    <div class="figure-caption">Fig. 6: Stage view of build. Jenkins Checkout, Build and Test (manage.py test store), Docker Build, Push Image, Minikube Deployment, and Verification all passed.</div>
+  </div>
+
+  <div class="page-footer">
+    <span>CCA 2: Cloud Computing and DevOps</span>
+    <span>Page 4</span>
+  </div>
+</div>
+
+<!-- ================= PAGE 5 ================= -->
+<div class="page">
+  <h2>7. Push Image to Docker Hub</h2>
+  <div class="figure-box">
+    <div class="figure-img-container">
+      <img src="screenshots/fig7_dockerhub.png" alt="Fig 7" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+      <div class="placeholder-text" style="display:none;">📷 <strong>Insert Fig. 7 Screenshot Here</strong><br>Screenshot of Docker Hub repository ishaan2006/itint-store showing tags 1, 2, and latest.</div>
+    </div>
+    <div class="figure-caption">Fig. 7: Docker Hub repository ishaan2006/itint-store with the latest tag and the automated build-number tags pushed by Jenkins.</div>
+  </div>
+
+  <h2>8. Kubernetes Deployment Manifest</h2>
+  <div class="figure-box">
+    <div class="figure-img-container">
+      <img src="screenshots/fig8_k8s_manifest.png" alt="Fig 8" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+      <div class="placeholder-text" style="display:none;">📷 <strong>Insert Fig. 8 Screenshot Here</strong><br>Screenshot of VS Code showing k8s/deployment.yaml and k8s/service.yaml committed to main.</div>
+    </div>
+    <div class="figure-caption">Fig. 8: k8s/deployment.yaml and k8s/service.yaml configured with RollingUpdate strategy, resource limits, and health probes, committed to main.</div>
+  </div>
+
+  <div class="page-footer">
+    <span>CCA 2: Cloud Computing and DevOps</span>
+    <span>Page 5</span>
+  </div>
+</div>
+
+<!-- ================= PAGE 6 ================= -->
+<div class="page">
+  <h2>9. Minikube Deployment</h2>
+  <div class="figure-box">
+    <div class="figure-img-container">
+      <img src="screenshots/fig9_deployment_console.png" alt="Fig 9" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+      <div class="placeholder-text" style="display:none;">📷 <strong>Insert Fig. 9 Screenshot Here</strong><br>Screenshot of Build #1 console showing kubectl apply -f k8s/ and rollout status completing with Finished: SUCCESS.</div>
+    </div>
+    <div class="figure-caption">Fig. 9: Build #1 console output. The Minikube Deployment stage applied manifests, verified deployment rollout status, and finished with SUCCESS.</div>
+  </div>
+
+  <h2>10. Verification: Pods, Deployment and Service</h2>
+  <div class="figure-box">
+    <div class="figure-img-container">
+      <img src="screenshots/fig10_kubectl_verify.png" alt="Fig 10" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+      <div class="placeholder-text" style="display:none;">📷 <strong>Insert Fig. 10 Screenshot Here</strong><br>Screenshot of EC2 terminal running kubectl get pods -l app=itint-store and kubectl get svc itint-service.</div>
+    </div>
+    <div class="figure-caption">Fig. 10: Two pods in Running state (2/2 ready), deployment available, and the itint-service NodePort service active on port 8000:30080.</div>
+  </div>
+
+  <div class="page-footer">
+    <span>CCA 2: Cloud Computing and DevOps</span>
+    <span>Page 6</span>
+  </div>
+</div>
+
+<!-- ================= PAGE 7 ================= -->
+<div class="page">
+  <h2>11. Application Accessibility</h2>
+  <div class="figure-box">
+    <div class="figure-img-container">
+      <img src="screenshots/fig11_app_curl.png" alt="Fig 11" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+      <div class="placeholder-text" style="display:none;">📷 <strong>Insert Fig. 11 Screenshot Here</strong><br>Screenshot of terminal running curl against /api/health and returning {"status":"ok","service":"itint-backend"}.</div>
+    </div>
+    <div class="figure-caption">Fig. 11: The application responds through the Kubernetes NodePort service at port 30080 (/api/health returns HTTP 200 with service status).</div>
+  </div>
+
+  <h2>12. Source Code Change and Pipeline Re-run</h2>
+  <p>The frontend badge in <code>frontend/index.html</code> was changed to <strong>"v2.0 — Autumn Edition"</strong>, committed and pushed to GitHub, automatically triggering Pipeline Build #2.</p>
+  <div class="figure-box">
+    <div class="figure-img-container">
+      <img src="screenshots/fig12_rerun_verify.png" alt="Fig 12" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+      <div class="placeholder-text" style="display:none;">📷 <strong>Insert Fig. 12 Screenshot Here</strong><br>Screenshot showing the deployed storefront or health response before and after the redeployment with updated v2.0 content.</div>
+    </div>
+    <div class="figure-caption">Fig. 12: Application storefront verified after the re-run, seamlessly demonstrating the new version deployed via Kubernetes RollingUpdate with zero downtime.</div>
+  </div>
+
+  <div class="page-footer">
+    <span>CCA 2: Cloud Computing and DevOps</span>
+    <span>Page 7</span>
+  </div>
+</div>
+
+<!-- ================= PAGE 8 ================= -->
+<div class="page">
+  <h2>13. Jenkins Build History</h2>
+  <div class="figure-box">
+    <div class="figure-img-container">
+      <img src="screenshots/fig13_build_history.png" alt="Fig 8" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+      <div class="placeholder-text" style="display:none;">📷 <strong>Insert Fig. 13 Screenshot Here</strong><br>Screenshot of Jenkins sidebar showing Build #1 and Build #2 both green and successful.</div>
+    </div>
+    <div class="figure-caption">Fig. 13: Jenkins build history showing Build #1 and Build #2 of itint-ci-cd-pipeline, all successful. Build #2 deployed the version 2 source-code change.</div>
+  </div>
+
+  <h2>Result</h2>
+  <p>An automated end-to-end CI/CD delivery pipeline was successfully implemented for the <strong>itint E-Commerce</strong> project using GitHub, Jenkins, Docker, Docker Hub, Kubernetes, and Minikube hosted on AWS EC2. Every commit pushed to GitHub automatically triggers automated unit testing, container compilation, image registry publishing, and seamless zero-downtime rolling update deployment onto the Minikube cluster.</p>
+
+  <div class="page-footer">
+    <span>CCA 2: Cloud Computing and DevOps</span>
+    <span>Page 8</span>
+  </div>
+</div>
+
+</body>
+</html>
