@@ -32,7 +32,9 @@ pipeline {
                 echo "Stage 3: Building Application and Running Tests"
                 echo "=========================================="
                 sh '''
-                    python3 -m venv venv_ci || virtualenv venv_ci
+                    PYTHON_CMD=$(which python3.12 2>/dev/null || which python3)
+                    echo "Using Python: $PYTHON_CMD ($($PYTHON_CMD --version))"
+                    $PYTHON_CMD -m venv venv_ci || virtualenv venv_ci
                     . venv_ci/bin/activate
                     pip install --upgrade pip
                     pip install -r backend/requirements.txt
