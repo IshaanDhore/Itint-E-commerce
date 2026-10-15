@@ -29,7 +29,7 @@ api = NinjaAPI(title="itint Store API", version="1.0.0")
 
 @api.get("/health")
 def health_check(request):
-    return {"status": "ok", "service": "itint-backend"}
+    return {"status": "ok", "service": "itint-backend", "version": "v2.0-autumn-edition"}
 
 
 @api.get("/reverse-geocode")
